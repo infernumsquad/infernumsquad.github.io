@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InfernumSquad Terminal + Web</title>
+  <style>
+    body {
+      background-color: #0c0c0c;
+      color: #33ff33;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+    #terminal-container {
+      position: relative;
+      width: 95vw;
+      max-width: 1200px;
+      height: 50vh;
+      margin-top: 10px;
+      background: radial-gradient(ellipse at center, #000000 0%, #0c0c0c 100%);
+      box-sizing: border-box;
+      padding: 20px;
+      overflow-y: auto;
+      border-radius: 8px;
+      flex-shrink: 0;
+      display: none;
+    }
+    #terminal {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .line {
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    .prompt {
+      color: #00ff00;
+      font-weight: bold;
+    }
+    .input-line {
+      display: flex;
+      align-items: center;
+    }
+    .input-line span.prompt {
+      flex-shrink: 0;
+    }
+    .input-line input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #33ff33;
+      font-family: inherit;
+      font-size: 1rem;
+      flex-grow: 1;
+      caret-color: #33ff33;
+      animation: blink-caret 1s step-start infinite;
+    }
+    @keyframes blink-caret {
+      0%, 100% { border-right: 1px solid #33ff33; }
+      50% { border-right: 1px solid transparent; }
+    }
+    #toggle-web-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #006400;
+      color: #33ff33;
+      border: none;
+      border-radius: 4px;
+      width: 30px;
+      height: 30px;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 24px;
+      user-select: none;
+      z-index: 1000;
+    }
+    #web-container {
+      width: 95vw;
+      max-width: 1200px;
+      height: 90vh;
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin-top: 10px;
+      border-radius: 8px;
+      overflow-y: auto;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+    #web-container header {
+      background-color: #222;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+    }
+    #web-container header img {
+      height: 50px;
+      border-radius: 10px;
+    }
+    #web-container nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    #web-container main {
+      padding: 40px 0 0 0;
+      max-width: 1000px;
+      margin: auto;
+    }
+    #web-container h2 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    #web-container section {
+      margin-bottom: 50px;
+    }
+    #web-container .profile-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px 0;
+    }
+    #web-container .profile {
+      background-color: #222;
+      border-radius: 10px;
+      padding: 15px;
+      width: 180px;
+      text-align: center;
+      transition: transform 0.3s;
+      cursor: pointer;
+      position: relative;
+      color: white;
+    }
+    #web-container .profile:hover {
+      transform: scale(1.05);
+    }
+    #web-container .profile img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    #web-container .profile-name {
+      font-weight: bold;
+    }
+    #web-container .profile-role {
+      font-size: 0.9em;
+      color: #ccc;
+    }
+    #web-container .profile:hover .tooltip {
+      display: block;
+    }
+    #web-container .tooltip {
+      display: none;
+      background-color: #330000;
+      color: #ff4c4c;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      font-size: 0.85em;
+      position: absolute;
+      top: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 250px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggle-web-btn">+</button>
+  <div id="web-container">
+    <header>
+      <div class="brand">
+        <img src="https://cdn.discordapp.com/icons/1314797349717016576/a_ff64d0c1ca349e960b23dce5bbc3e647.gif?size=2048" alt="InfernumSquad Logo">
+        <span>InfernumSquad</span>
+      </div>
+      <nav>
+        <a href="#">Foro</a>
+        <a href="#">Nosotros</a>
+        <a href="#">Servicios</a>
+        <a href="#">Equipo</a>
+      </nav>
+    </header>
+    <main>
+      <section>
+        <h2>Miembros</h2>
+        <div class="profile-grid">
+          <div class="profile">
+            <img src="https://cdn.discordapp.com/icons/1314797349717016576/a_ff64d0c1ca349e960b23dce5bbc3e647.gif?size=2048" alt="Kzwarun">
+            <div class="profile-name">Kzwarun</div>
+            <div class="profile-role">Pentester - Cyber mastermind & Black Hat Hacker</div>
+            <div class="tooltip">Especializado en phishing e ingeniería social.</div>
+          </div>
+          <div class="profile">
+            <img src="https://cdn.discordapp.com/icons/1314797349717016576/a_ff64d0c1ca349e960b23dce5bbc3e647.gif?size=2048" alt="0xpl0it">
+            <div class="profile-name">0xpl0it</div>
+            <div class="profile-role">Pentester - Cyber mastermind & Black Hat Hacker</div>
+            <div class="tooltip">Especializado en phishing e ingeniería social.</div>
+          </div>
+          <div class="profile">
+            <img src="https://cdn.discordapp.com/icons/1314797349717016576/a_ff64d0c1ca349e960b23dce5bbc3e647.gif?size=2048" alt="Alex Csharp">
+            <div class="profile-name">Alex Csharp</div>
+            <div class="profile-role">Pentester - Cyber mastermind & Black Hat Hacker</div>
+            <div class="tooltip">Especializado en phishing e ingeniería social.</div>
+          </div>
+          <div class="profile">
+            <img src="https://cdn.discordapp.com/icons/1314797349717016576/a_ff64d0c1ca349e960b23dce5bbc3e647.gif?size=2048" alt="Mateo">
+            <div class="profile-name">Mateo</div>
+            <div class="profile-role">Pentester - White Hat Hacker</div>
+            <div class="tooltip">Especializado en ingeniería social.</div>
+          </div>
+          <div class="profile">
+            <img src="https://cdn.discordapp.com/icons/1314797349717016576/a_ff64d0c1ca349e960b23dce5bbc3e647.gif?size=2048" alt="Selfs Opsint">
+            <div class="profile-name">Selfs Opsint</div>
+            <div class="profile-role">Pentester - Black Hat Hacker</div>
+            <div class="tooltip">Especializado en phishing e ingeniería social.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div id="terminal-container">
+    <div id="terminal"></div>
+  </div>
+  <script>
+    const terminalContainer = document.getElementById('terminal-container');
+    const terminal = document.getElementById('terminal');
+    const toggleWebBtn = document.getElementById('toggle-web-btn');
+    const webContainer = document.getElementById('web-container');
+    const miembros = {
+      "0xpl0it": { nombre: "0xpl0it", rol: "Pentester", info: "Especialista en ingeniería social.", ubicacion: "México", status: "Activo", skills: "Phishing", actividad: "2025-06-23" },
+      "opsint": { nombre: "Selfs Opsint", rol: "Miembro", info: "Experto en OSINT.", ubicacion: "Argentina", status: "Activo", skills: "OSINT", actividad: "2025-06-21" },
+      "maestro": { nombre: "Maestro", rol: "Miembro", info: "Analista de seguridad.", ubicacion: "Chile", status: "Activo", skills: "Seguridad", actividad: "2025-06-24" },
+      "oda": { nombre: "Oda", rol: "Miembro", info: "Experto en exploits.", ubicacion: "Colombia", status: "Activo", skills: "Exploits", actividad: "2025-06-22" },
+      "alexcsharp": { nombre: "Alex Csharp", rol: "Miembro", info: "Desarrollador y pentester.", ubicacion: "España", status: "Activo", skills: "Pentesting", actividad: "2025-06-20" },
+      "kzwarun": { nombre: "Kzwarun", rol: "Co-Fundador", info: "Pentester senior.", ubicacion: "México", status: "Activo", skills: "Red Team", actividad: "2025-06-23" },
+      "mateo": { nombre: "Mateo", rol: "Miembro", info: "Analista forense.", ubicacion: "Argentina", status: "Activo", skills: "Forense", actividad: "2025-06-21" }
+    };
+    const validKeys = ['0xpl0it', 'mateo', 'kzwarun', 'opsint'];
+    function writeLine(text = "") {
+      const line = document.createElement('div');
+      line.className = "line";
+      line.textContent = text;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+    function addInput(placeholder = "", onEnter = null) {
+      const inputLine = document.createElement('div');
+      inputLine.className = 'input-line';
+      inputLine.innerHTML = `<span class="prompt">➣ root@infernumsquad:~# </span><input type="text" autocomplete="off" placeholder="${placeholder}" />`;
+      terminal.appendChild(inputLine);
+      const input = inputLine.querySelector('input');
+      input.focus();
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const val = input.value.trim();
+          if (val.length === 0) return;
+          input.disabled = true;
+          if (onEnter) {
+            onEnter(val);
+          } else {
+            processCommand(val);
+          }
+        }
+      });
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+    function typeOutput(text, callback, clearBefore = false) {
+      if (clearBefore) terminal.innerHTML = '';
+      const lines = text.split('\n');
+      let i = 0;
+      function printLine() {
+        if (i < lines.length) {
+          writeLine(lines[i]);
+          i++;
+          setTimeout(printLine, 30);
+        } else {
+          if (callback) callback();
+        }
+      }
+      printLine();
+    }
+    function processCommand(cmd) {
+      const [base, ...args] = cmd.split(" ");
+      const arg = args.join(" ");
+      switch (base.toLowerCase()) {
+        case 'help':
+          return typeOutput(`Comandos disponibles:\n- help\n- listar\n- info [miembro]\n- scan miembros\n- tools\n- decodeBase64 [cadena]\n- banner\n- clear\n- exit`, addInput);
+        case 'listar':
+          let salida = "Miembros activos:";
+          for (const k in miembros) {
+            const m = miembros[k];
+            salida += `\n - ${m.nombre} (${m.rol})`;
+          }
+          return typeOutput(salida, addInput);
+        case 'info':
+          const m = miembros[arg.toLowerCase()];
+          return m
+            ? typeOutput(`${m.nombre} — ${m.rol}\n📍 ${m.ubicacion}\n🔧 ${m.skills}\n📶 ${m.status}\n🕒 Última actividad: ${m.actividad}\n🧾 ${m.info}`, addInput, true)
+            : typeOutput("Miembro no encontrado.", addInput);
+        case 'scan':
+          if (arg === 'miembros') {
+            let output = 'Escaneando miembros...';
+            for (const k in miembros) {
+              const m = miembros[k];
+              output += `\n- ${m.nombre} [${m.rol}] — Estado: ${m.status}`;
+            }
+            return typeOutput(output, addInput);
+          }
+          return typeOutput("Uso: scan miembros", addInput);
+        case 'tools':
+          return typeOutput(`Herramientas:\n- netSniffer\n- portHunter\n- dnsResolver`, addInput);
+        case 'decodebase64':
+          if (arg) {
+            try {
+              const decoded = atob(arg);
+              return typeOutput(`Decodificado:\n${decoded}`, addInput);
+            } catch {
+              return typeOutput("Cadena inválida.", addInput);
+            }
+          }
+          return typeOutput("Uso: decodeBase64 [cadena]", addInput);
+        case 'banner':
+          return typeOutput(`InfernumSquad Terminal`, addInput);
+        case 'clear':
+          terminal.innerHTML = '';
+          return addInput();
+        case 'exit':
+          typeOutput('Saliendo...', () => {
+            terminal.innerHTML = '';
+            addInput();
+          });
+          return;
+        default:
+          return typeOutput(`Comando no reconocido: ${base}`, addInput);
+      }
+    }
+    toggleWebBtn.addEventListener('click', () => {
+      if (webContainer.style.display !== 'none') {
+        webContainer.style.display = 'none';
+        terminalContainer.style.display = 'block';
+        toggleWebBtn.textContent = '-';
+      } else {
+        terminalContainer.style.display = 'none';
+        webContainer.style.display = 'block';
+        toggleWebBtn.textContent = '+';
+      }
+    });
+    webContainer.style.display = 'block';
+    terminalContainer.style.display = 'none';
+    toggleWebBtn.textContent = '+';
+    function initTerminal() {
+      typeOutput(`InfernumSquad Terminal\nEscribe "help" para comandos.`, addInput);
+    }
+    initTerminal();
+  </script>
+</body>
+</html>
